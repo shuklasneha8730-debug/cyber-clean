@@ -1,0 +1,209 @@
+/* ================= BODY & DEFAULTS ================= */
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #0f172a;
+    color: #f8fafc;
+}
+
+/* ================= NAVBAR ================= */
+nav {
+    background-color: #020617;
+    padding: 12px 20px;
+    text-align: center;
+    position: relative;  /* keeps navbar above hero overlay */
+    z-index: 10;
+}
+
+nav a {
+    color: #38bdf8;
+    margin: 15px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    color: #22d3ee;
+    transform: scale(1.05);
+}
+
+/* ================= HERO SECTION ================= */
+.hero {
+    height: 80vh;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.hero .overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(2,6,23,0.7);
+    display: flex;
+    align-items: center;
+    padding: 40px;
+}
+
+.hero-text h1 {
+    color: #38bdf8;
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.hero-text p {
+    color: #f8fafc;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+/* ================= INTRODUCTION SECTION ================= */
+section img {
+    border-radius: 10px;
+}
+
+section .text {
+    width: 50%;
+}
+
+/* Intro and scope flex layout */
+.intro, .scope {
+    display: flex;
+    gap: 30px;
+    padding: 40px;
+    align-items: center;
+}
+
+.intro img, .scope img {
+    width: 40%;
+}
+
+/* ================= OBJECTIVES ================= */
+.objectives {
+    padding: 40px;
+}
+
+.objectives h2 {
+    margin-bottom: 20px;
+}
+
+.cards-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: #020617;
+    padding: 20px;
+    margin: 10px 0;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+    animation: fadeIn 1s;
+}
+
+/* ================= ANIMATION ================= */
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(20px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+/* ================= BUTTONS / FORMS ================= */
+input, textarea, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+button {
+    background-color: #38bdf8;
+    color: #020617;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #22d3ee;
+}
+
+/* ================= HEADINGS ================= */
+h1, h2 {
+    color: #38bdf8;
+}
+
+/* ================= FOOTER ================= */
+footer {
+    background-color: #020617;
+    text-align: center;
+    padding: 15px;
+    margin-top: 30px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media screen and (max-width: 900px) {
+    .intro, .scope {
+        flex-direction: column;
+        text-align: center;
+    }
+    .intro .text, .scope .text {
+        width: 100%;
+    }
+    .intro img, .scope img {
+        width: 80%;
+    }
+}
+
+
+/* ================= TESTIMONIALS ================= */
+
+.testimonials {
+    padding: 40px 20px;
+    background-color: #020617;
+    text-align: center;
+}
+
+.testimonials h2 {
+    margin-bottom: 30px;
+    color: #38bdf8;
+}
+
+.testimonial-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.testimonial-card {
+    background-color: #0f172a;
+    padding: 25px;
+    width: 300px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.25);
+    transition: transform 0.3s ease;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-8px);
+}
+
+.testimonial-card p {
+    font-style: italic;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.testimonial-card h4 {
+    color: #38bdf8;
+    margin-bottom: 5px;
+}
+
+.testimonial-card span {
+    font-size: 14px;
+    color: #cbd5f5;
+}

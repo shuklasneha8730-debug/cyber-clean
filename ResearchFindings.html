@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Research Findings | Cyber Clean</title>
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* ================= BODY & DEFAULTS ================= */
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+
+        /* ================= MAIN NAVBAR ================= */
+        nav {
+            background-color: #020617;
+            padding: 12px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+        }
+
+        nav a {
+            color: #38bdf8;
+            margin: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        nav a:hover { color: #22d3ee; }
+
+        /* ================= HERO SECTION ================= */
+        .hero {
+            min-height: 80vh;
+            background-color: #020617;
+            background-image: url('https://images.unsplash.com/photo-1555949963-aa79dcee981c');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .hero .overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(2,6,23,0.95) 0%, rgba(2,6,23,0.7) 50%, rgba(2,6,23,0.4) 100%);
+            z-index: 1;
+        }
+
+        .hero-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 60px;
+        }
+
+        .hero-text { flex: 1; max-width: 600px; }
+        .hero-text h1 { color: #38bdf8; font-size: 48px; font-weight: bold; margin: 0 0 20px 0; line-height: 1.2; }
+        .hero-text p { color: #cbd5e1; font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
+
+        .hero-highlights { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+        .highlight-item {
+            background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 10px 15px; border-radius: 8px; font-size: 14px; color: #cbd5e1;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .highlight-item span { color: #38bdf8; font-weight: bold; }
+
+        .hero-btn {
+            display: inline-block; background-color: #38bdf8; color: #020617;
+            padding: 12px 30px; border-radius: 30px; text-decoration: none;
+            font-weight: bold; transition: 0.3s; box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+        }
+        .hero-btn:hover { background-color: #22d3ee; transform: translateY(-2px); }
+
+        .hero-graphic { flex: 0 0 300px; display: flex; justify-content: center; align-items: center; position: relative; }
+        .shield-logo { width: 250px; height: 280px; filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.4)); animation: float 3s ease-in-out infinite; }
+
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+
+        /* ================= ABSTRACT SUMMARY SECTION ================= */
+        .abstract-section {
+            padding: 80px 40px;
+            background-color: #0f172a;
+            border-top: 1px solid rgba(56, 189, 248, 0.1);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+        }
+
+        .abstract-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .abstract-container h2 { color: #38bdf8; font-size: 36px; margin-bottom: 15px; }
+        .abstract-container .subtitle { color: #94a3b8; font-size: 16px; margin-bottom: 50px; max-width: 700px; margin-left: auto; margin-right: auto; }
+
+        .abstract-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            text-align: left;
+        }
+
+        .abstract-card {
+            background: #020617;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #38bdf8;
+            transition: transform 0.3s ease;
+        }
+
+        .abstract-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+
+        .abstract-card h3 {
+            color: #ffffff;
+            font-size: 20px;
+            margin-top: 0;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .abstract-card h3 span { color: #38bdf8; font-size: 24px; }
+        .abstract-card p { color: #94a3b8; font-size: 14px; line-height: 1.6; margin: 0; }
+
+        /* ================= SPLIT CHART SECTION ================= */
+        .split-chart-section {
+            padding: 80px 40px;
+            background-color: #020617;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .split-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 60px;
+            flex-wrap: wrap;
+        }
+
+        .chart-info { flex: 1; min-width: 300px; }
+        .chart-info h2 { color: #38bdf8; font-size: 36px; margin: 0 0 15px 0; text-align: left; }
+        .chart-info .subtitle { color: #94a3b8; font-size: 16px; margin-bottom: 40px; line-height: 1.6; }
+
+        .stat-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #38bdf8;
+        }
+
+        .stat-icon { font-size: 24px; margin-right: 20px; color: #38bdf8; }
+        .stat-text h4 { margin: 0 0 5px 0; color: #ffffff; font-size: 18px; }
+        .stat-text p { margin: 0; color: #94a3b8; font-size: 14px; }
+
+        .chart-wrapper {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chart-canvas-container { position: relative; width: 100%; max-width: 450px; }
+
+        .chart-center-text {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+        }
+        .chart-center-text .score { font-size: 48px; font-weight: bold; color: #ffffff; display: block; }
+        .chart-center-text .label { font-size: 14px; color: #94a3b8; }
+
+        /* ================= KEY INSIGHTS SECTION ================= */
+        .key-insights-section {
+            padding: 80px 40px;
+            background-color: #0f172a;
+            border-top: 1px solid rgba(56, 189, 248, 0.1);
+        }
+
+        .insights-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .insights-container h2 {
+            color: #38bdf8;
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .insights-container .subtitle {
+            color: #94a3b8;
+            font-size: 16px;
+            margin-bottom: 50px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            text-align: left;
+        }
+
+        .insight-card {
+            background-color: #020617;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .insight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .insight-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .insight-card h3 {
+            color: #ffffff;
+            font-size: 20px;
+            margin: 0 0 15px 0;
+        }
+
+        .insight-card p {
+            color: #94a3b8;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* ================= PDF VIEWER SECTION ================= */
+        .pdf-section {
+            padding: 80px 40px;
+            background-color: #0f172a;
+        }
+
+        .pdf-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pdf-container h2 {
+            color: #38bdf8;
+            font-size: 32px;
+            margin-bottom: 15px;
+            border-left: 5px solid #38bdf8;
+            padding-left: 15px;
+        }
+
+        .pdf-container .subtitle {
+            color: #94a3b8;
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+
+        /* Viewer Shell */
+        .viewer-shell {
+            display: flex;
+            background-color: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 1px solid #334155;
+            height: 800px; 
+        }
+
+        /* Sidebar */
+        .viewer-sidebar {
+            width: 300px;
+            background-color: #0f172a;
+            border-right: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #334155;
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .outline-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .outline-item {
+            padding: 15px 20px;
+            color: #94a3b8;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .outline-item:hover {
+            background-color: #1e293b;
+            color: #38bdf8;
+        }
+
+        .outline-item.active {
+            background-color: #1e293b;
+            border-left: 3px solid #38bdf8;
+            color: #fff;
+        }
+
+        /* Sidebar Footer - NEW ADDITION */
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid #334155;
+            background-color: #020617;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Left text, Right button */
+            margin-top: auto; /* Pushes to bottom */
+        }
+
+        .file-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .file-name {
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .file-meta {
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background-color: #38bdf8;
+            color: #020617;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        .download-btn:hover {
+            background-color: #22d3ee;
+        }
+
+        /* Main Content Area */
+        .viewer-main {
+            flex-grow: 1;
+            background-color: #e2e8f0;
+            position: relative;
+        }
+
+        .pdf-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* ================= FOOTER ================= */
+        footer { background-color: #020617; color: #cbd5e1; font-size: 14px; border-top: 1px solid rgba(56, 189, 248, 0.1); }
+        .footer-back-top { background-color: #0c1524; text-align: center; padding: 15px; cursor: pointer; }
+        .footer-back-top:hover { background-color: #162030; }
+        .footer-back-top a { color: #cbd5e1; text-decoration: none; font-size: 13px; }
+        .footer-main { display: flex; justify-content: space-around; flex-wrap: wrap; padding: 50px 30px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); max-width: 1200px; margin: 0 auto; }
+        .footer-col { flex: 1; min-width: 150px; margin-bottom: 20px; }
+        .footer-col h3 { color: #ffffff; font-size: 16px; font-weight: bold; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; padding: 0; margin: 0; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: #94a3b8; text-decoration: none; transition: color 0.2s; display: block; }
+        .footer-col ul li a:hover { color: #38bdf8; }
+        .footer-bottom { padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; }
+        .footer-logo { font-weight: bold; color: #38bdf8; font-size: 18px; margin-right: 20px; }
+        .footer-links-row { display: flex; gap: 20px; flex-wrap: wrap; }
+        .footer-links-row a { color: #94a3b8; text-decoration: none; font-size: 12px; }
+        .footer-copyright { width: 100%; text-align: center; margin-top: 15px; font-size: 12px; color: #64748b; }
+
+        /* ================= RESPONSIVE ================= */
+        @media screen and (max-width: 900px) {
+            .hero-container { flex-direction: column; text-align: center; padding: 40px 20px; }
+            .hero-text { max-width: 100%; }
+            .hero-graphic { display: none; }
+            
+            .split-container { flex-direction: column; }
+            .chart-info { order: 2; margin-top: 40px; text-align: center; }
+            .chart-info h2 { text-align: center; }
+            .chart-wrapper { order: 1; }
+
+            /* Mobile adjustments for Viewer */
+            .viewer-shell {
+                flex-direction: column;
+                height: auto;
+            }
+            .viewer-sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid #334155;
+            }
+            .viewer-main {
+                height: 600px; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- MAIN NAVBAR -->
+<nav>
+    <a href="index.html">Home</a>
+    <a href="ResearchFindings.html">Research Findings</a>
+    <a href="AwarenessTips.html">Awareness Tips</a>
+    <a href="Survey.html">Survey</a>
+    <a href="MediaGallery.html">Media Gallery</a>
+    <a href="InteractiveChatbox.html">Interactive chatbox</a>
+    <a href="Resource.html">Resources</a>
+    <a href="CommunityForum.html">Community Forum</a>
+    <a href="Contact.html">Contact</a>
+</nav>
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="overlay"></div>
+    <div class="hero-container">
+        <div class="hero-text">
+            <h1>Research Findings</h1>
+            <p>Key insights and statistics gathered from our campus cyber hygiene awareness initiative.</p>
+            
+            <div class="hero-highlights">
+                <div class="highlight-item"><span>✓</span> Survey Results</div>
+                <div class="highlight-item"><span>✓</span> Risk Analysis</div>
+                <div class="highlight-item"><span>✓</span> Data Insights</div>
+            </div>
+            <a href="#stats" class="hero-btn">View Statistics</a>
+        </div>
+
+        <div class="hero-graphic">
+            <svg class="shield-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 3V21H21" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7 16L7 18" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M12 10L12 18" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M17 6L17 18" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="17" cy="6" r="2" fill="rgba(56, 189, 248, 0.2)" stroke="#38bdf8" stroke-width="1"/>
+                <circle cx="12" cy="10" r="2" fill="rgba(56, 189, 248, 0.2)" stroke="#38bdf8" stroke-width="1"/>
+                <circle cx="7" cy="16" r="2" fill="rgba(56, 189, 248, 0.2)" stroke="#38bdf8" stroke-width="1"/>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<!-- ABSTRACT SUMMARY SECTION -->
+<section class="abstract-section">
+    <div class="abstract-container">
+        <h2>Abstract: Research Impact</h2>
+        <p class="subtitle">Our study on cyber hygiene practices among college students and faculty reveals critical insights into digital behavior, risk awareness, and the need for targeted educational interventions.</p>
+
+        <div class="abstract-grid">
+            <div class="abstract-card">
+                <h3><span>01.</span> Behavioral Analysis</h3>
+                <p>Comprehensive survey of digital habits reveals a strong reliance on digital tools but inconsistent security practices among the academic community.</p>
+            </div>
+
+            <div class="abstract-card">
+                <h3><span>02.</span> Risk Identification</h3>
+                <p>Key vulnerabilities were identified in network security (Wi-Fi usage) and advanced threat response mechanisms, highlighting critical gaps.</p>
+            </div>
+
+            <div class="abstract-card">
+                <h3><span>03.</span> Privacy Trends</h3>
+                <p>While 80% manage social media privacy, only a fraction employ advanced tools like VPNs, indicating a "privacy illusion" rather than deep security.</p>
+            </div>
+
+            <div class="abstract-card">
+                <h3><span>04.</span> Strategic Recommendations</h3>
+                <p>Data supports the integration of mandatory cyber hygiene modules into the curriculum to bridge the gap between awareness and action.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SPLIT CHART SECTION -->
+<section id="stats" class="split-chart-section">
+    <div class="split-container">
+        
+        <!-- LEFT SIDE: Text Info -->
+        <div class="chart-info">
+            <h2>Overall Behavior Profile</h2>
+            <p class="subtitle">Analysis of cyber hygiene practices among college students and faculty highlights a mix of strong awareness and critical gaps.</p>
+
+            <div class="stat-row">
+                <div class="stat-icon">✅</div>
+                <div class="stat-text">
+                    <h4>High Awareness</h4>
+                    <p>80% manage privacy settings carefully, showing strong basic security habits.</p>
+                </div>
+            </div>
+
+            <div class="stat-row">
+                <div class="stat-icon">⚠️</div>
+                <div class="stat-text">
+                    <h4>Moderate Caution</h4>
+                    <p>55% verify links before clicking, but 40% still risk using public Wi-Fi for sensitive tasks.</p>
+                </div>
+            </div>
+
+            <div class="stat-row">
+                <div class="stat-icon">❌</div>
+                <div class="stat-text">
+                    <h4>Critical Gaps</h4>
+                    <p>Only 15% utilize VPNs or report threats, indicating a need for advanced training.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE: Circular Graph -->
+        <div class="chart-wrapper">
+            <div class="chart-canvas-container">
+                <canvas id="behaviorDoughnutChart"></canvas>
+                <div class="chart-center-text">
+                    <span class="score">47%</span>
+                    <span class="label">Overall Score</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- KEY INSIGHTS & CONCLUSION SECTION -->
+<section class="key-insights-section">
+    <div class="insights-container">
+        <h2>Key Insights & Conclusion</h2>
+        <p class="subtitle">Deep dive into specific behaviors that define the current state of cyber hygiene on campus.</p>
+
+        <div class="insights-grid">
+            <div class="insight-card">
+                <span class="insight-icon">🎯</span>
+                <h3>The Awareness Gap</h3>
+                <p>While students are aware of basic risks, there is a significant disconnect between knowing best practices and implementing them consistently.</p>
+            </div>
+
+            <div class="insight-card">
+                <span class="insight-icon">📶</span>
+                <h3>Network Negligence</h3>
+                <p>Public Wi-Fi is a major vulnerability. A large percentage of users perform sensitive tasks (banking, work) without VPN protection.</p>
+            </div>
+
+            <div class="insight-card">
+                <span class="insight-icon">🔒</span>
+                <h3>Password Fatigue</h3>
+                <p>Users struggle with password management. Reusing passwords across multiple platforms remains a common issue despite known risks.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PDF VIEWER SECTION (UPDATED FOOTER) -->
+<section class="pdf-section">
+    <div class="pdf-container">
+        <h2>Detailed Research Paper</h2>
+        <p class="subtitle">Read the full comprehensive study detailing methodology, fieldwork, and complete analysis.</p>
+        
+        <div class="viewer-shell">
+            <!-- Left Sidebar -->
+            <div class="viewer-sidebar">
+                <div class="sidebar-header">
+                    <span>Document Outline</span>
+                </div>
+                <ul class="outline-list">
+                    <li class="outline-item active">1. Abstract</li>
+                    <li class="outline-item">2. Table of Content</li>
+                    <li class="outline-item">3. List of Figures & Tables</li>
+                    <li class="outline-item">4. Chapter 1: Introduction</li>
+                    <li class="outline-item">5. Chapter 2: Literature Review</li>
+                    <li class="outline-item">6. Chapter 3: Methodology</li>
+                    <li class="outline-item">7. Chapter 4: Field Work</li>
+                    <li class="outline-item">8. Chapter 5: Conclusion</li>
+                    <li class="outline-item">9. References</li>
+                </ul>
+
+                <!-- Sidebar Footer with File Info and Download Button -->
+                <div class="sidebar-footer">
+                    <div class="file-details">
+                        <div class="file-name">Download Full Research Paper.pdf</div>
+                        <div class="file-meta">PDF Document - 245 KB</div>
+                    </div>
+                    <a href="researchpdf.pdf" download class="download-btn">Download</a>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="viewer-main">
+                <iframe src="researchpdf.pdf" class="pdf-iframe" title="Research Paper PDF">
+                    This browser does not support PDFs. Please download the PDF to view it: <a href="researchpdf.pdf">Download PDF</a>.
+                </iframe>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-back-top"><a href="#">Back to top</a></div>
+    <div class="footer-main">
+        <div class="footer-col"><h3>Get to Know Us</h3><ul><li><a href="#">About Cyber Clean</a></li><li><a href="#">Careers</a></li><li><a href="#">Our Team</a></li></ul></div>
+        <div class="footer-col"><h3>Student Resources</h3><ul><li><a href="AwarenessTips.html">Awareness Tips</a></li><li><a href="ResearchFindings.html">Research Findings</a></li><li><a href="Survey.html">Survey</a></li></ul></div>
+        <div class="footer-col"><h3>Support</h3><ul><li><a href="Contact.html">Contact Us</a></li><li><a href="#">Help Center</a></li><li><a href="#">FAQs</a></li></ul></div>
+        <div class="footer-col"><h3>Legal</h3><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+        <div class="footer-logo">Cyber Clean</div>
+        <div class="footer-links-row"><a href="#">Conditions of Use</a><a href="#">Privacy Notice</a><a href="#">Interest-Based Ads</a></div>
+        <div class="footer-copyright">© 2026 Cyber Clean Program, Inc. or its affiliates</div>
+    </div>
+</footer>
+
+<!-- CHART SCRIPT -->
+<script>
+    const ctx = document.getElementById('behaviorDoughnutChart');
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: [
+                'Privacy Management (High)', 
+                'Link Verification (Moderate)', 
+                'Wi-Fi Caution (Low)', 
+                'Advanced Security (Critical Gap)'
+            ],
+            datasets: [{
+                data: [80, 55, 40, 15], 
+                backgroundColor: [
+                    'rgba(34, 197, 94, 0.8)',  
+                    'rgba(56, 189, 248, 0.8)',  
+                    'rgba(250, 204, 21, 0.8)',  
+                    'rgba(239, 68, 68, 0.8)'   
+                ],
+                borderColor: '#020617',
+                borderWidth: 4,
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            cutout: '70%', 
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#cbd5e1',
+                        font: { size: 12 },
+                        padding: 20
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            label += context.raw + '% Activity';
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

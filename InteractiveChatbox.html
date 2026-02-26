@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Cyber Clean | Interactive Chatbox</title>
+    
+    <!-- INTERNAL CSS -->
+    <style>
+        /* ================= BODY & DEFAULTS ================= */
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+
+        /* ================= MAIN NAVBAR ================= */
+        nav {
+            background-color: #020617;
+            padding: 12px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+        }
+
+        nav a {
+            color: #38bdf8;
+            margin: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        nav a:hover { color: #22d3ee; }
+
+        /* ================= HERO SECTION ================= */
+        .hero {
+            min-height: 80vh;
+            background-color: #020617;
+            background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .hero .overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(2,6,23,0.95) 0%, rgba(2,6,23,0.7) 50%, rgba(2,6,23,0.4) 100%);
+            z-index: 1;
+        }
+
+        .hero-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 60px;
+        }
+
+        .hero-text { flex: 1; max-width: 600px; }
+        .hero-text h1 { color: #38bdf8; font-size: 48px; font-weight: bold; margin: 0 0 20px 0; line-height: 1.2; }
+        .hero-text p { color: #cbd5e1; font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
+
+        .hero-highlights { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+        .highlight-item {
+            background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 10px 15px; border-radius: 8px; font-size: 14px; color: #cbd5e1;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .highlight-item span { color: #38bdf8; font-weight: bold; }
+
+        .hero-btn {
+            display: inline-block; background-color: #38bdf8; color: #020617;
+            padding: 12px 30px; border-radius: 30px; text-decoration: none;
+            font-weight: bold; transition: 0.3s; box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+            border: none; cursor: pointer; font-size: 16px;
+        }
+        .hero-btn:hover { background-color: #22d3ee; transform: translateY(-2px); }
+
+        .hero-graphic { flex: 0 0 300px; display: flex; justify-content: center; align-items: center; position: relative; }
+        .shield-logo { width: 250px; height: 280px; filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.4)); animation: float 3s ease-in-out infinite; }
+
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+
+        /* ================= FAQ SECTION ================= */
+        .faq-section {
+            padding: 80px 40px;
+            background-color: #0f172a;
+            border-top: 1px solid rgba(56, 189, 248, 0.1);
+        }
+
+        .faq-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-container h2 {
+            color: #38bdf8;
+            font-size: 36px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .faq-item {
+            margin-bottom: 15px;
+            border-left: 4px solid #38bdf8;
+            background-color: #020617;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            color: #f8fafc;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background-color: rgba(56, 189, 248, 0.05);
+        }
+
+        .faq-icon {
+            font-size: 20px;
+            color: #38bdf8;
+            transition: transform 0.3s;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            background-color: rgba(56, 189, 248, 0.05);
+            color: #cbd5e1;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .faq-answer.active {
+            max-height: 200px;
+            padding: 15px 20px;
+            border-top: 1px solid rgba(56, 189, 248, 0.1);
+        }
+
+        /* ================= CHATBOX STYLES ================= */
+        #chatBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px;
+            z-index: 1000;
+            background-color: #38bdf8;
+            color: #020617;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+        }
+
+        #chatBtn:hover { background-color: #22d3ee; }
+
+        #chatBox {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px; /* Reduced width to medium */
+            border: 1px solid #38bdf8;
+            padding: 15px;
+            background-color: #020617;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            z-index: 1000;
+            color: #f8fafc;
+        }
+
+        #chatBox p { margin-top: 0; color: #38bdf8; font-size: 14px; }
+
+        #chatArea {
+            height: 150px; /* Reduced height to medium */
+            border: 1px solid #1e293b;
+            overflow: auto;
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: #0f172a;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        /* Quick Question Buttons Style */
+        .quick-questions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+        }
+
+        .quick-btn {
+            background-color: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #38bdf8;
+            padding: 5px 8px;
+            border-radius: 15px;
+            font-size: 11px; /* Slightly smaller font for buttons */
+            cursor: pointer;
+            transition: background 0.2s;
+            flex: 1 1 40%; 
+            text-align: center;
+        }
+
+        .quick-btn:hover {
+            background-color: rgba(56, 189, 248, 0.2);
+            transform: translateY(-1px);
+        }
+
+        #userMsg {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            background-color: #f8fafc;
+            color: #020617;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        #sendBtn {
+            width: 100%;
+            padding: 8px;
+            cursor: pointer;
+            background-color: #38bdf8;
+            color: #020617;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            margin-top: 5px;
+            font-size: 13px;
+        }
+
+        #sendBtn:hover { background-color: #22d3ee; }
+
+        /* ================= FOOTER ================= */
+        footer { background-color: #020617; color: #cbd5e1; font-size: 14px; border-top: 1px solid rgba(56, 189, 248, 0.1); }
+        .footer-back-top { background-color: #0c1524; text-align: center; padding: 15px; cursor: pointer; }
+        .footer-back-top:hover { background-color: #162030; }
+        .footer-back-top a { color: #cbd5e1; text-decoration: none; font-size: 13px; }
+        .footer-main { display: flex; justify-content: space-around; flex-wrap: wrap; padding: 50px 30px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); max-width: 1200px; margin: 0 auto; }
+        .footer-col { flex: 1; min-width: 150px; margin-bottom: 20px; }
+        .footer-col h3 { color: #ffffff; font-size: 16px; font-weight: bold; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; padding: 0; margin: 0; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: #94a3b8; text-decoration: none; transition: color 0.2s; display: block; }
+        .footer-col ul li a:hover { color: #38bdf8; }
+        .footer-bottom { padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; }
+        .footer-logo { font-weight: bold; color: #38bdf8; font-size: 18px; margin-right: 20px; }
+        .footer-links-row { display: flex; gap: 20px; flex-wrap: wrap; }
+        .footer-links-row a { color: #94a3b8; text-decoration: none; font-size: 12px; }
+        .footer-copyright { width: 100%; text-align: center; margin-top: 15px; font-size: 12px; color: #64748b; }
+
+        /* ================= RESPONSIVE ================= */
+        @media screen and (max-width: 900px) {
+            .hero-container { flex-direction: column; text-align: center; padding: 40px 20px; }
+            .hero-text { max-width: 100%; }
+            .hero-graphic { display: none; }
+        }
+    </style>
+</head>
+<body> 
+    
+    <!-- MAIN NAVBAR -->
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="ResearchFindings.html">Research Findings</a>
+        <a href="AwarenessTips.html">Awareness Tips</a>
+        <a href="Survey.html">Survey</a>
+        <a href="MediaGallery.html">Media Gallery</a>
+        <a href="InteractiveChatbox.html">Interactive chatbox</a>
+        <a href="Resource.html">Resources</a>
+        <a href="CommunityForum.html">Community Forum</a>
+        <a href="Contact.html">Contact</a>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="overlay"></div>
+        <div class="hero-container">
+            <div class="hero-text">
+                <h1>Interactive Chatbox</h1>
+                <p>Meet the Cyber Clean Assistant. Get instant answers about passwords, phishing, and safe browsing habits. Available 24/7 to help you stay secure.</p>
+                
+                <div class="hero-highlights">
+                    <div class="highlight-item"><span>🤖</span> AI Powered</div>
+                    <div class="highlight-item"><span>🔒</span> Security Tips</div>
+                    <div class="highlight-item"><span>⚡</span> Instant Help</div>
+                </div>
+                <button class="hero-btn" onclick="toggleChat()">Start Chatting</button>
+            </div>
+
+            <div class="hero-graphic">
+                <svg class="shield-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L3 7V12C3 17.55 6.84 22.74 12 24C17.16 22.74 21 17.55 21 12V7L12 2Z" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="rgba(56, 189, 248, 0.05)"/>
+                    <path d="M8 10H16" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M8 13H13" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="16" cy="14" r="3" fill="rgba(56, 189, 248, 0.2)" stroke="#38bdf8" stroke-width="1.5"/>
+                    <path d="M18.5 16L20 17.5" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section class="faq-section">
+        <div class="faq-container">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>What makes a password strong?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    A strong password uses a mix of uppercase letters, lowercase letters, numbers, and symbols, and is at least 12 characters long.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>How can I identify a phishing email?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    Look for urgent language, generic greetings, spelling errors, and suspicious sender addresses asking for personal information.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Is public Wi-Fi safe to use?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    Public Wi-Fi is often unsecured; avoid accessing sensitive accounts or use a VPN to encrypt your data.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Why are software updates important?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    Updates often contain security patches that fix vulnerabilities hackers can use to access your system.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>What is Two-Factor Authentication (2FA)?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    2FA adds an extra layer of security by requiring a second form of verification, like a code sent to your phone.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>How often should I back up my data?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    You should back up important files at least once a week to an external drive or secure cloud storage.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Is it safe to download free software?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    Only download from reputable sources; free software from unknown sites often contains hidden malware.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>What should I do if my account is hacked?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    Immediately change your password, enable 2FA, and check for any unauthorized activity on your account.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>How can I protect my privacy on social media?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    Set your profiles to private and avoid sharing personal details like your location, phone number, or birthday publicly.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>What is a VPN and why do I need it?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    A Virtual Private Network encrypts your internet connection, protecting your data from snoopers on public networks.
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FLOATING CHAT BUTTON -->
+    <button id="chatBtn" onclick="toggleChat()">🔒 Cyber Clean Bot</button>
+
+    <!-- CHAT WINDOW -->
+    <div id="chatBox">
+        <p><b>Cyber Clean Assistant</b></p>
+        <div id="chatArea">
+            <p><b>Bot:</b> Hello! I am the Cyber Clean Bot. I can help you with cyber hygiene practices. Ask me about passwords, phishing, or public Wi-Fi! 🛡️</p>
+        </div>
+        
+        <!-- QUICK QUESTION BUTTONS -->
+        <div class="quick-questions">
+            <button class="quick-btn" onclick="askQuickQuestion('password')">Password Tips</button>
+            <button class="quick-btn" onclick="askQuickQuestion('phishing')">Phishing Help</button>
+            <button class="quick-btn" onclick="askQuickQuestion('wifi')">Safe Wi-Fi</button>
+            <button class="quick-btn" onclick="askQuickQuestion('2fa')">What is 2FA?</button>
+            <button class="quick-btn" onclick="askQuickQuestion('update')">Updates</button>
+            <button class="quick-btn" onclick="askQuickQuestion('backup')">Backup Data</button>
+            <button class="quick-btn" onclick="askQuickQuestion('privacy')">Social Privacy</button>
+        </div>
+
+        <input type="text" id="userMsg" placeholder="Type your question...">
+        <button id="sendBtn" onclick="sendMsg()">Send</button>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-back-top"><a href="#">Back to top</a></div>
+        <div class="footer-main">
+            <div class="footer-col"><h3>Get to Know Us</h3><ul><li><a href="#">About Cyber Clean</a></li><li><a href="#">Careers</a></li><li><a href="#">Our Team</a></li></ul></div>
+            <div class="footer-col"><h3>Student Resources</h3><ul><li><a href="AwarenessTips.html">Awareness Tips</a></li><li><a href="ResearchFindings.html">Research Findings</a></li><li><a href="Survey.html">Survey</a></li></ul></div>
+            <div class="footer-col"><h3>Support</h3><ul><li><a href="Contact.html">Contact Us</a></li><li><a href="#">Help Center</a></li><li><a href="#">FAQs</a></li></ul></div>
+            <div class="footer-col"><h3>Legal</h3><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li></ul></div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-logo">Cyber Clean</div>
+            <div class="footer-links-row"><a href="#">Conditions of Use</a><a href="#">Privacy Notice</a><a href="#">Interest-Based Ads</a></div>
+            <div class="footer-copyright">© 2026 Cyber Clean Program, Inc. or its affiliates</div>
+        </div>
+    </footer>
+
+    <script>
+        /* FAQ TOGGLE FUNCTION */
+        function toggleFaq(element) {
+            let answer = element.nextElementSibling;
+            let icon = element.querySelector('.faq-icon');
+
+            if (answer.classList.contains('active')) {
+                answer.classList.remove('active');
+                icon.textContent = '+';
+            } else {
+                answer.classList.add('active');
+                icon.textContent = '−';
+            }
+        }
+
+        /* CHATBOX TOGGLE FUNCTION */
+        function toggleChat() {
+            let chat = document.getElementById("chatBox");
+            if (chat.style.display === "none" || chat.style.display === "") {
+                chat.style.display = "block";
+            } else {
+                chat.style.display = "none";
+            }
+        }
+
+        /* QUICK QUESTION BUTTON FUNCTION */
+        function askQuickQuestion(topic) {
+            let input = document.getElementById("userMsg");
+            // Set specific text based on button topic
+            if (topic === 'password') input.value = "How to create a strong password?";
+            else if (topic === 'phishing') input.value = "What is phishing?";
+            else if (topic === 'wifi') input.value = "Is public wifi safe?";
+            else if (topic === '2fa') input.value = "What is 2FA?";
+            else if (topic === 'update') input.value = "Why are software updates important?";
+            else if (topic === 'backup') input.value = "How to backup data?";
+            else if (topic === 'privacy') input.value = "How to protect social media privacy?";
+            
+            sendMsg(); // Automatically send the message
+        }
+
+        /* CHATBOT LOGIC */
+        function sendMsg() {
+            let input = document.getElementById("userMsg");
+            let msg = input.value.toLowerCase();
+            if (msg === "") return;
+
+            let chatArea = document.getElementById("chatArea");
+            chatArea.innerHTML += "<p><b>You:</b> " + input.value + "</p>";
+            input.value = "";
+
+            let reply = "I can help with topics like passwords, phishing, and safe browsing habits.";
+
+            if (msg.includes("password") || msg.includes("login")) {
+                reply = "Use strong, unique passwords for your accounts. Use a mix of letters, numbers, and symbols. Consider using a password manager!";
+            }
+            else if (msg.includes("phishing") || msg.includes("scam") || msg.includes("email")) {
+                reply = "Be cautious of emails asking for personal info. Always verify the sender's address and never click on suspicious links.";
+            }
+            else if (msg.includes("public wifi") || msg.includes("wifi") || msg.includes("library")) {
+                reply = "Avoid accessing sensitive data on public Wi-Fi. If you must, use a VPN to secure your connection.";
+            }
+            else if (msg.includes("update") || msg.includes("software")) {
+                reply = "Keep your operating system and antivirus software updated. Updates often patch security holes.";
+            }
+            else if (msg.includes("backup") || msg.includes("data")) {
+                reply = "Regularly back up your important files to an external drive or secure cloud storage.";
+            }
+            else if (msg.includes("social media") || msg.includes("privacy")) {
+                reply = "Review your privacy settings on social media. Avoid sharing your location or personal details publicly.";
+            }
+            else if (msg.includes("virus") || msg.includes("malware")) {
+                reply = "Do not download pirated software. Use reputable antivirus software to scan your computer regularly.";
+            }
+            else if (msg.includes("2fa") || msg.includes("two-factor") || msg.includes("verification")) {
+                reply = "Enable Two-Factor Authentication (2FA) on your accounts. It adds an extra layer of security.";
+            }
+            else {
+                reply = "You can ask me about: passwords, phishing, public Wi-Fi, software updates, data backups, or social media privacy.";
+            }
+
+            chatArea.innerHTML += "<p><b>Bot:</b> " + reply + "</p>";
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+    </script>
+
+</body>
+</html>
